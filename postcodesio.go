@@ -75,13 +75,16 @@ type geocodeResult struct {
 	Msoa                       string  `json:"msoa"`
 	Incode                     string  `json:"incode"`
 	Outcode                    string  `json:"outcode"`
-	Admin_district             string  `json:"admin_district"`
-	Parish                     string  `json:"parish"`
-	Admin_county               string  `json:"admin_county"`
-	Admin_ward                 string  `json:"admin_ward"`
-	Ccg                        string  `json:"ccg"`
-	Nuts                       string  `json:"nuts"`
-	Codes                      struct {
+
+	// These values are strings for a postcode and slices for an outward code.
+	Admin_district interface{} `json:"admin_district"`
+	Parish         interface{} `json:"parish"`
+	Admin_county   interface{} `json:"admin_county"`
+	Admin_ward     interface{} `json:"admin_ward"`
+
+	Ccg   string `json:"ccg"`
+	Nuts  string `json:"nuts"`
+	Codes struct {
 		Admin_district string `json:"admin_district"`
 		Admin_county   string `json:"admin_county"`
 		Admin_ward     string `json:"admin_ward"`
@@ -91,12 +94,23 @@ type geocodeResult struct {
 	} `json:"codes"`
 }
 
-func geocodeURL(postcode string) (result string, err error) {
-	// Not returning errors
+func geocodeURL(pc string) (result string, err error) {
 
-	uri, err := url.ParseRequestURI(baseURL + "/postcodes/" + postcode)
+	// We could do more sophisticated parsing here to determine the outward code
+	// and the inward code, but we don't really need it. All we need to know is
+	// whether we are looking at an outward code or a full postcode. No outward
+	// code is longer than 4 characters (ZZ99 or ZZ9Z), which is good because
+	// the shortest full postcode is 5 characters (Z9 9ZZ)
+	var u string
+	if len(pc) > 4 {
+		u = baseURL + "/postcodes/" + pc
+	} else {
+		u = baseURL + "/outcodes/" + pc
+	}
+
+	uri, err := url.ParseRequestURI(u)
 	if err != nil {
-		return
+		return "", err
 	}
 
 	return uri.String(), nil
