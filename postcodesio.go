@@ -63,7 +63,6 @@ type geocodeResult struct {
 	Quality                    int     `json:"quality"`
 	Eastings                   int     `json:"eastings"`
 	Northings                  int     `json:"northings"`
-	Country                    string  `json:"country"`
 	Nhs_ha                     string  `json:"nhs_ha"`
 	Longitude                  float64 `json:"longitude"`
 	Latitude                   float64 `json:"latitude"`
@@ -81,6 +80,7 @@ type geocodeResult struct {
 	Parish         interface{} `json:"parish"`
 	Admin_county   interface{} `json:"admin_county"`
 	Admin_ward     interface{} `json:"admin_ward"`
+	Country        interface{} `json:"country"`
 
 	Ccg   string `json:"ccg"`
 	Nuts  string `json:"nuts"`
